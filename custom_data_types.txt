@@ -1,0 +1,159 @@
+Custom data types
+
+Нестандартные типы данных:
+-псевдонимы (typedef)
+-перечисления (enum)
+-структуры (struct)
+-объединения (union)
+-поля битов
+
+
+~~~Struct~~~
+
+	Структура представляет собой набор данных, хранящихся в памяти в смежных адресах, но не обязательно принадлежащих одному типу. Структура позволяет сгруппировать переменные
+разных типов в единое целое. Имена структур принято писать с заглавной буквы, чтобы отличать их от имен переменных.
+
+	Properties
+
+-В памяти все поля структуры располагаются последовательно.
+-Память под структуру выделяется при объявлении переменных.
+-Доступ к полям производится с помощью операций . и ->.
+-Полем структуры может быть указатель на структуру.
+	
+	Description
+
+--
+struct <Name>
+{
+	type1 <name1>;
+	type2 <name2>;
+	...
+	typeN <nameN>;
+};
+--
+name1, ..., nameN - поля структуры
+
+
+	Creating object
+
+--
+struct BOOK
+{
+   char title[40];
+   char author[30];
+   int pages;
+   float price;
+};
+--
+
+	Initialization
+
+Example1
+
+--
+struct BOOK b1={"The C programming",
+                "K & R",
+                300,
+				100.23 };
+--
+			
+Example2
+
+--
+struct BOOK
+{
+   char title[40];
+   char author[30];
+   int pages;
+   float price;
+}
+b1 = {"The C programming",
+      "K & R",
+      300,
+      100.23 };
+	  
+	Access
+
+Для доступа к полю через структурный объект используется "."
+
+--
+struct BOOK book, *pbook=&book;
+
+book.price=123.50;
+strcpy(book.title,"The C programming");
+
+pbook->pages=300;
+strcpy(pbook->author,"K&R");
+--
+
+Для доступа к полю через адрес объекта используется ‘’стрелочка’‘
+
+--
+struct BOOK book, *pbook=&book;
+
+(&book)->price=123.50;
+strcpy((&book)->title,"The C programming");
+
+(*pbook).pages=300;
+strcpy((*pbook).author,"K&R");
+--
+
+	Вложенные структуры
+
+Структуры можно вкладывать друг в друга ("матрёшки")
+
+--
+struct TIME
+{
+   int hh;
+   int mm;
+   int ss;
+};
+
+struct EVENT
+{
+   char title[256];
+   struct TIME when;
+};
+
+
+struct EVENT event, *pevent=&event;
+
+strcpy(event.title,"begin");
+event.when.hh=18;
+event.when.mm=0;
+event.when.ss=0;
+
+strcpy(pevent->title,"begin");
+pevent->when.hh=18;
+pevent->when.mm=0;
+pevent->when.ss=0;
+--
+
+	Присвоение структур
+	
+Допускается присваивать структурные объекты как обычные переменные при соблюдении следующих условий:
+
+-Объекты одного типа
+-В объекте нет полей-указателей
+Если существуют поля-указатели, то после присваивания могут возникнуть двойные ссылки на один и тот же участок памяти.
+
+Как же присваивать структуры? Через присвоение значения поля другому полю. При встрече с указателями нужно выделить память под копию данных, затем скопировать данные из одной области памяти в другую.
+
+--
+struct BOOK
+{
+   char title[40];
+   char author[40];
+   float price;
+};
+
+struct BOOK book1={"The C Programming",
+             "K&R", 300.0};
+struct BOOK book2;
+book2=book1; // поэлементное копирование
+
+// мы меняем только book1, но не book2!
+strcpy(book1.title,"The C++ Programming");
+--
+
